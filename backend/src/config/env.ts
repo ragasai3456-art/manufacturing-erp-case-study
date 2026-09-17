@@ -1,13 +1,25 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const nodeEnv = (process.env.NODE_ENV || 'development').trim().toLowerCase();
+const isProduction = nodeEnv === 'production';
 
 // Only load local .env files outside of production environments.
-// In production (Render, Cloud Run, Vercel), platform environment variables are authoritative
-// and must never be supplemented or overwritten by file-based env configs.
+// In production (Render, Cloud Run, Vercel), platform environment variables are authoritative.
 if (!isProduction) {
   dotenv.config();
+}
+
+// Sanitize/normalize JWT_SECRET from environment (handle potential surrounding quotes or extra whitespace in dashboard input)
+let rawJwtSecret = process.env.JWT_SECRET;
+if (typeof rawJwtSecret === 'string') {
+  rawJwtSecret = rawJwtSecret.trim();
+  if (
+    (rawJwtSecret.startsWith('"') && rawJwtSecret.endsWith('"')) ||
+    (rawJwtSecret.startsWith("'") && rawJwtSecret.endsWith("'"))
+  ) {
+    rawJwtSecret = rawJwtSecret.slice(1, -1).trim();
+  }
 }
 
 // Strict validation in production: ensure mandatory variables are present without weak fallbacks
@@ -15,10 +27,10 @@ if (isProduction) {
   if (!process.env.DATABASE_URL) {
     throw new Error('DATABASE_URL is required in production');
   }
-  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 16) {
+  if (!rawJwtSecret || rawJwtSecret.length < 16) {
     throw new Error('JWT_SECRET is required in production and must be at least 16 characters long');
   }
-  if (process.env.JWT_SECRET === 'super_secret_jwt_key_for_erp_manufacturing_case_study_2026') {
+  if (rawJwtSecret === 'super_secret_jwt_key_for_erp_manufacturing_case_study_2026') {
     throw new Error('Default development JWT_SECRET cannot be used in production');
   }
   if (!process.env.FRONTEND_URL) {
@@ -48,7 +60,10 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 
-const parsedEnv = envSchema.safeParse(process.env);
+const parsedEnv = envSchema.safeParse({
+  ...process.env,
+  ...(rawJwtSecret ? { JWT_SECRET: rawJwtSecret } : {}),
+});
 
 if (!parsedEnv.success) {
   // Never print raw secrets to logs

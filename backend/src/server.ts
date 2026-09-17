@@ -2,7 +2,7 @@ import { app } from './app.js';
 import { env } from './config/env.js';
 import { prisma } from './config/prisma.js';
 
-const PORT = env.PORT || 5000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : (env.PORT || 3000);
 
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Manufacturing ERP Backend listening on http://0.0.0.0:${PORT}`);

@@ -23,7 +23,7 @@ export const createApp = (): Express => {
     })
   );
 
-  // CORS Configuration: allows localhost dev and production Vercel frontend from FRONTEND_URL
+  // CORS Configuration: explicitly supports Vercel production frontend, AI Studio preview environment, and local dev
   const configuredOrigins = (process.env.FRONTEND_URL || env.FRONTEND_URL || '')
     .split(',')
     .map((url) => url.trim());
@@ -32,13 +32,33 @@ export const createApp = (): Express => {
     new Set([
       'http://localhost:5173',
       'http://localhost:3000',
+      'https://manufacturing-erp-case-study.vercel.app',
       ...configuredOrigins,
     ])
   ).filter(Boolean);
 
   app.use(
     cors({
-      origin: allowedOrigins,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+
+        // Check explicit origins
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        // Allow AI Studio preview and development subdomains
+        if (
+          origin.endsWith('.run.app') ||
+          origin.endsWith('.vercel.app') ||
+          origin.startsWith('http://localhost:')
+        ) {
+          return callback(null, true);
+        }
+
+        return callback(new Error(`CORS policy does not allow access from origin ${origin}`), false);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
@@ -49,7 +69,7 @@ export const createApp = (): Express => {
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-  // Health Check Endpoint - clean response without internal server or environment exposure
+  // Health Check Endpoint - returns HTTP 200 { "status": "ok" } BEFORE authenticated routes
   app.get('/api/health', (req, res) => {
     res.status(200).json({
       status: 'ok',
