@@ -9,7 +9,7 @@
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "tsx src/utils/seed.ts",
+    "prisma:seed": "tsx prisma/seed.ts",
     "test": "jest --runInBand --detectOpenHandles"
   },
   "dependencies": {
@@ -40,5 +40,8 @@
     "ts-jest": "^29.2.6",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
