@@ -3,7 +3,7 @@ import path from 'path';
 import { z } from 'zod';
 
 // Load environment variables from .env file if present
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+// In production (e.g. Render/Cloud Run), existing environment variables must always take precedence
 dotenv.config();
 
 const isProduction = process.env.NODE_ENV === 'production';
