@@ -1,0 +1,8 @@
+{
+  "name": "Manufacturing ERP",
+  "description": "Production-quality industrial ERP system covering Customer Enquiry, Quotation, Sales Order, Inventory Reservation, and Dispatch workflows.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

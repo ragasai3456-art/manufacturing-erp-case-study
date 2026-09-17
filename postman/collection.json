@@ -1,0 +1,559 @@
+{
+  "info": {
+    "_postman_id": "erp-manufacturing-collection-v1",
+    "name": "Manufacturing ERP API Collection",
+    "description": "Postman collection for Manufacturing & Supply Fulfillment ERP. Uses {{baseUrl}} (e.g. http://localhost:3000/api or https://your-backend.onrender.com/api) and {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login (Sales)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sales@example.com\",\n  \"password\": \"Sales@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Sales Rep\",\n  \"email\": \"newsales@example.com\",\n  \"password\": \"Sales@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Bharat Heavy Components Ltd\",\n  \"contactPerson\": \"Amitabh Verma\",\n  \"mobile\": \"9876543299\",\n  \"email\": \"procurement@bhcl.in\",\n  \"city\": \"Vadodara\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        },
+        {
+          "name": "Create Product (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productCode\": \"FLG-SS-304\",\n  \"productName\": \"Stainless Steel Flange 4-inch\",\n  \"category\": \"Piping & Fittings\",\n  \"unit\": \"PCS\",\n  \"basePrice\": 1850,\n  \"initialPhysicalQuantity\": 120\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Get All Inventory Stock",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventory",
+              "host": ["{{baseUrl}}"],
+              "path": ["inventory"]
+            }
+          }
+        },
+        {
+          "name": "Adjust Stock (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"addPhysicalQuantity\": 25,\n  \"damagedQuantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inventory/:productId",
+              "host": ["{{baseUrl}}"],
+              "path": ["inventory", ":productId"],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "INSERT_PRODUCT_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enquiries",
+      "item": [
+        {
+          "name": "Get All Enquiries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/enquiries",
+              "host": ["{{baseUrl}}"],
+              "path": ["enquiries"]
+            }
+          }
+        },
+        {
+          "name": "Create Enquiry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"INSERT_CUSTOMER_ID\",\n  \"requiredDate\": \"2026-10-25T00:00:00.000Z\",\n  \"notes\": \"Required for urgent factory setup\",\n  \"items\": [\n    {\n      \"productId\": \"INSERT_PRODUCT_ID\",\n      \"quantity\": 15\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/enquiries",
+              "host": ["{{baseUrl}}"],
+              "path": ["enquiries"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotations",
+      "item": [
+        {
+          "name": "Get All Quotations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations",
+              "host": ["{{baseUrl}}"],
+              "path": ["quotations"]
+            }
+          }
+        },
+        {
+          "name": "Create Quotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enquiryId\": \"INSERT_ENQUIRY_ID\",\n  \"customerId\": \"INSERT_CUSTOMER_ID\",\n  \"validUntil\": \"2026-10-31T00:00:00.000Z\",\n  \"items\": [\n    {\n      \"productId\": \"INSERT_PRODUCT_ID\",\n      \"quantity\": 10,\n      \"unitPrice\": 1000,\n      \"discountPct\": 10,\n      \"gstPct\": 18\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quotations",
+              "host": ["{{baseUrl}}"],
+              "path": ["quotations"]
+            }
+          }
+        },
+        {
+          "name": "Update Quotation Status (Accept)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACCEPTED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["quotations", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_QUOTATION_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Convert Quotation to Sales Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/convert",
+              "host": ["{{baseUrl}}"],
+              "path": ["quotations", ":id", "convert"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_QUOTATION_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales Orders",
+      "item": [
+        {
+          "name": "Get All Sales Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-orders"]
+            }
+          }
+        },
+        {
+          "name": "Confirm Sales Order (Reserve Stock - Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/:id/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-orders", ":id", "confirm"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_SALES_ORDER_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Sales Order (Release Stock - Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Customer cancelled order due to plant project delay\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/:id/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-orders", ":id", "cancel"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_SALES_ORDER_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dispatch",
+      "item": [
+        {
+          "name": "Dispatch Order (Deduct Inventory - Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleNumber\": \"MH-12-AB-9876\",\n  \"driverName\": \"Santosh Jadhav\",\n  \"notes\": \"Dispatched with factory warranty certificate\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-orders/:id/dispatch",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-orders", ":id", "dispatch"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "INSERT_SALES_ORDER_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
