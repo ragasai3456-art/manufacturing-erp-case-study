@@ -1,12 +1,14 @@
 import dotenv from 'dotenv';
-import path from 'path';
 import { z } from 'zod';
 
-// Load environment variables from .env file if present
-// In production (e.g. Render/Cloud Run), existing environment variables must always take precedence
-dotenv.config();
-
 const isProduction = process.env.NODE_ENV === 'production';
+
+// Only load local .env files outside of production environments.
+// In production (Render, Cloud Run, Vercel), platform environment variables are authoritative
+// and must never be supplemented or overwritten by file-based env configs.
+if (!isProduction) {
+  dotenv.config();
+}
 
 // Strict validation in production: ensure mandatory variables are present without weak fallbacks
 if (isProduction) {
